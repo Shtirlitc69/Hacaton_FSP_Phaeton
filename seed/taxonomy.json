@@ -1,0 +1,38 @@
+{
+  "specializations": [
+    {"slug": "backend", "name_ru": "Backend-разработка", "description": "Серверная логика, микросервисы, базы данных, высокая нагрузка"},
+    {"slug": "frontend", "name_ru": "Frontend-разработка", "description": "Пользовательские интерфейсы, React, Vue, оптимизация производительности"},
+    {"slug": "fullstack", "name_ru": "Fullstack-разработка", "description": "Сквозная разработка клиентской и серверной части"},
+    {"slug": "mobile", "name_ru": "Мобильная разработка", "description": "iOS (Swift) и Android (Kotlin), кроссплатформенные приложения"},
+    {"slug": "devops", "name_ru": "DevOps / Инфраструктура", "description": "CI/CD, Kubernetes, Docker, облачная инфраструктура и мониторинг"},
+    {"slug": "qa", "name_ru": "QA / Автотестирование", "description": "Контроль качества ПО, автоматизация тестов (Python, Java), нагрузочное тестирование"},
+    {"slug": "data_ml", "name_ru": "Data Science / ML", "description": "Машинное обучение, нейросети, обработка естественного языка и Big Data"}
+  ],
+  "grades": [
+    {"slug": "intern", "name_ru": "Стажёр (Intern)", "rank_order": 1, "min_theta": -3.0, "max_theta": -1.0},
+    {"slug": "junior", "name_ru": "Младший (Junior)", "rank_order": 2, "min_theta": -1.0, "max_theta": 0.0},
+    {"slug": "middle", "name_ru": "Специалист (Middle)", "rank_order": 3, "min_theta": 0.0, "max_theta": 1.2},
+    {"slug": "senior", "name_ru": "Старший (Senior)", "rank_order": 4, "min_theta": 1.2, "max_theta": 2.0},
+    {"slug": "lead", "name_ru": "Ведущий (Lead)", "rank_order": 5, "min_theta": 2.0, "max_theta": 3.5}
+  ],
+  "skills": [
+    {"name": "Python", "category": "backend"},
+    {"name": "FastAPI", "category": "backend"},
+    {"name": "Django", "category": "backend"},
+    {"name": "PostgreSQL", "category": "db"},
+    {"name": "Redis", "category": "db"},
+    {"name": "Docker", "category": "infra"},
+    {"name": "Kubernetes", "category": "infra"},
+    {"name": "CI/CD", "category": "infra"},
+    {"name": "React", "category": "frontend"},
+    {"name": "TypeScript", "category": "frontend"},
+    {"name": "Next.js", "category": "frontend"},
+    {"name": "Tailwind CSS", "category": "frontend"},
+    {"name": "Go", "category": "backend"},
+    {"name": "C++", "category": "backend"},
+    {"name": "Kafka", "category": "backend"},
+    {"name": "PyTorch", "category": "data_ml"},
+    {"name": "Pandas", "category": "data_ml"},
+    {"name": "Pytest", "category": "qa"}
+  ]
+}

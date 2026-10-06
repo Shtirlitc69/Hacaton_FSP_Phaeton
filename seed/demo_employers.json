@@ -1,0 +1,40 @@
+[
+  {
+    "company_name": "СберТех (ПАО Сбербанк)",
+    "description": "Ведущая технологическая компания, разрабатывающая цифровые сервисы для десятков миллионов пользователей.",
+    "website": "https://sbertech.ru",
+    "industry": "FinTech / HighLoad",
+    "contact_person": "Ольга Романова (Tech Recruiter)",
+    "contact_email": "recruiting@sbertech.ru",
+    "needs": [
+      {
+        "title": "Middle Backend Developer (Python, FastAPI, Redis)",
+        "specialization_slug": "backend",
+        "target_grade_slug": "middle",
+        "salary_from": 190000,
+        "salary_to": 250000,
+        "required_skills": ["Python", "FastAPI", "PostgreSQL", "Redis"],
+        "description": "Ищем сильного разработчика в команду платформенных сервисов. Задачи: разработка асинхронных API, оптимизация очередей сообщений."
+      }
+    ]
+  },
+  {
+    "company_name": "Яндекс",
+    "description": "Экосистема умных сервисов, поиска, облачных платформ и искусственного интеллекта.",
+    "website": "https://yandex.ru",
+    "industry": "Search / Cloud / AI",
+    "contact_person": "Артем Белов (Lead IT Recruiter)",
+    "contact_email": "hr-tech@yandex-team.ru",
+    "needs": [
+      {
+        "title": "Senior Distributed Backend Engineer",
+        "specialization_slug": "backend",
+        "target_grade_slug": "senior",
+        "salary_from": 300000,
+        "salary_to": 380000,
+        "required_skills": ["Python", "Go", "Kafka", "Docker", "Kubernetes"],
+        "description": "Разработка распределенного хранилища данных с гарантией высокой отказоустойчивости."
+      }
+    ]
+  }
+]

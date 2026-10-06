@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Кастомные акценты брендбука ФСП */
+.fsp-gradient {
+  background: linear-gradient(135deg, #1E1B4B 0%, #4A0E4E 50%, #5E17EB 100%);
+}
+
+.fsp-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+}

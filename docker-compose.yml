@@ -1,0 +1,89 @@
+# ==============================================================================
+# ФСП ХАКАТОН 2026: КОМПОНОВКА СЕРВИСОВ DOCKER COMPOSE
+# ==============================================================================
+# Запуск всей системы одной командой:
+#   docker compose up --build -d
+# Наполнение базы демо-данными:
+#   docker compose exec api python -m seed.seed_data
+#
+# Общее потребление RAM рассчитано строго до 1.5–2.0 ГБ (согласно разделу 3.1 ТЗ).
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # --- 1. PostgreSQL с расширениями pgvector, pg_trgm и русским FTS ---
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: fsp_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fsp_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-fsp_platform_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- 2. Redis для сессий, кэша скоринга и rate limit ---
+  redis:
+    image: redis:7-alpine
+    container_name: fsp_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # --- 3. Backend API (FastAPI, Python 3.12, SQLAlchemy 2.0, ONNX Embeddings) ---
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fsp_api
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-fsp_password_2026}@db:5432/${POSTGRES_DB:-fsp_platform_db}"
+      REDIS_URL: "redis://redis:6379/0"
+      ENVIRONMENT: "production"
+      ASYNC_MODE: "inline"
+    ports:
+      - "8000:8000"
+
+  # --- 4. Frontend SPA (React 18 + Vite + Tailwind + shadcn/ui в брендовых цветах ФСП) ---
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fsp_web
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
+  # --- 5. Mailpit для перехвата подтверждений email (dev-режим) ---
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: fsp_mailpit
+    restart: always
+    ports:
+      - "8025:8025"  # Веб-интерфейс почтового ящика
+      - "1025:1025"  # SMTP порт
+
+volumes:
+  pgdata:

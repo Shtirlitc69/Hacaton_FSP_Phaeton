@@ -1,0 +1,41 @@
+# ==============================================================================
+# ФСП ХАКАТОН 2026: ЗАВИСИМОСТИ БЭКЕНДА (Python 3.11/3.12)
+# ==============================================================================
+
+# FastAPI & HTTP Server
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.9
+httpx>=0.27.0
+
+# Pydantic v2 (Валидация данных, строгие DTO без утечек персональных данных)
+pydantic>=2.8.0
+pydantic-settings>=2.4.0
+email-validator>=2.2.0
+
+# База данных: SQLAlchemy 2.0 Async + asyncpg
+sqlalchemy>=2.0.32
+asyncpg>=0.29.0
+alembic>=1.13.2
+
+# Кэширование, сессии, rate limiting
+redis>=5.0.8
+
+# Безопасность по 152-ФЗ (Argon2 для паролей, JWT для сессий)
+argon2-cffi>=23.1.0
+passlib[argon2]>=1.7.4
+python-jose[cryptography]>=3.3.0
+
+# Математические расчеты IRT, CAT и валидационные метрики
+numpy>=1.26.0
+scipy>=1.13.0
+
+# Шаблонизация параметризованных вопросов (Anti-Leak)
+jinja2>=3.1.4
+
+# Генерация отчетов и PDF документации
+reportlab>=5.0.0
+
+# Тестирование (Unit, Integration, Security)
+pytest>=8.3.0
+pytest-asyncio>=0.24.0

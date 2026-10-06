@@ -1,0 +1,82 @@
+[
+  {
+    "code": "ALG-COMPLEX-01",
+    "title": "Асимптотическая сложность циклов и кучи",
+    "specialization_slug": "backend",
+    "target_grade_slug": "junior",
+    "discrimination_a": 1.25,
+    "difficulty_b": -0.60,
+    "template_payload": "Оценка Big-O алгоритма",
+    "checker_code": "generate_algorithmic_complexity"
+  },
+  {
+    "code": "ALG-COMPLEX-02",
+    "title": "Временная сложность вложенных структур",
+    "specialization_slug": "backend",
+    "target_grade_slug": "middle",
+    "discrimination_a": 1.45,
+    "difficulty_b": 0.35,
+    "template_payload": "Оценка Big-O вложенных циклов с шагом",
+    "checker_code": "generate_algorithmic_complexity"
+  },
+  {
+    "code": "ALG-COMPLEX-03",
+    "title": "Оптимизация пространственной и временной сложности",
+    "specialization_slug": "backend",
+    "target_grade_slug": "senior",
+    "discrimination_a": 1.60,
+    "difficulty_b": 1.45,
+    "template_payload": "Оценка Big-O динамического программирования и кучи",
+    "checker_code": "generate_algorithmic_complexity"
+  },
+  {
+    "code": "PY-CLOSURE-01",
+    "title": "Замыкания и область видимости в Python",
+    "specialization_slug": "backend",
+    "target_grade_slug": "junior",
+    "discrimination_a": 1.10,
+    "difficulty_b": -0.30,
+    "template_payload": "Late binding в lambda-функциях",
+    "checker_code": "generate_python_scope_and_closures"
+  },
+  {
+    "code": "PY-CLOSURE-02",
+    "title": "Поведение генераторов и замыканий",
+    "specialization_slug": "backend",
+    "target_grade_slug": "middle",
+    "discrimination_a": 1.35,
+    "difficulty_b": 0.50,
+    "template_payload": "Итераторы и замыкания со смещением",
+    "checker_code": "generate_python_scope_and_closures"
+  },
+  {
+    "code": "SQL-ISO-01",
+    "title": "Уровни изоляции транзакций PostgreSQL (Read Committed)",
+    "specialization_slug": "backend",
+    "target_grade_slug": "middle",
+    "discrimination_a": 1.50,
+    "difficulty_b": 0.40,
+    "template_payload": "Аномалии конкурентного доступа в SQL",
+    "checker_code": "generate_sql_transaction_isolation"
+  },
+  {
+    "code": "SQL-ISO-02",
+    "title": "Аномалии Repeatable Read и Serializable в PostgreSQL",
+    "specialization_slug": "backend",
+    "target_grade_slug": "senior",
+    "discrimination_a": 1.70,
+    "difficulty_b": 1.60,
+    "template_payload": "Snapshot isolation и предикатные блокировки",
+    "checker_code": "generate_sql_transaction_isolation"
+  },
+  {
+    "code": "ARCH-DISTRIB-01",
+    "title": "CAP-теорема и консистентность в распределенных СУБД",
+    "specialization_slug": "backend",
+    "target_grade_slug": "senior",
+    "discrimination_a": 1.55,
+    "difficulty_b": 1.80,
+    "template_payload": "Eventual consistency vs Linearizability",
+    "checker_code": "generate_algorithmic_complexity"
+  }
+]
