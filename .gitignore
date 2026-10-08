@@ -61,3 +61,7 @@ validation/reports/*.json
 *.db
 *.sqlite3
 pgdata/
+
+# Documentation PDFs
+*.pdf
+
