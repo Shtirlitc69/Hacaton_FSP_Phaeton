@@ -38,6 +38,8 @@ from app.models.candidate import CandidateProfile, CandidateCategory, CandidateS
 from app.models.employer import EmployerProfile, EmployerNeed
 from app.models.assessment import ItemTemplate, ItemParam
 from app.models.fsp import FspProfile, FspAchievement
+from app.models.invitation import Invitation
+from app.models.vacancy import Vacancy, Application, DailyChallenge, ChallengeSubmission
 from app.services.fsp.mock_provider import MockFspProvider
 
 

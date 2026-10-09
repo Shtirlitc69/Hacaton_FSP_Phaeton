@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../lib/api';
 import { Question } from '../../types';
-import { Sparkles, Clock, AlertTriangle, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Clock, AlertTriangle, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface Props {
   onFinish: () => void;

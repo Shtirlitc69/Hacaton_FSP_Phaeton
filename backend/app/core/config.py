@@ -45,9 +45,9 @@ class Settings(BaseSettings):
     ]
 
     # -------------------------------------------------------------------------
-    # 2. База данных PostgreSQL (с pgvector)
+    # 2. База данных: SQLite dev fallback по умолчанию, PostgreSQL для продакшена
     # -------------------------------------------------------------------------
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:fsp_password_2026@localhost:5432/fsp_platform_db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./fsp_platform.db"
 
     # -------------------------------------------------------------------------
     # 3. Redis и фоновые задачи
@@ -94,7 +94,7 @@ class Settings(BaseSettings):
     EMAILS_FROM_NAME: str = "Платформа ФСП"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=[".env", "../.env"],
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore"

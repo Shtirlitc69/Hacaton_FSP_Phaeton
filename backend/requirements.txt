@@ -13,9 +13,10 @@ pydantic>=2.8.0
 pydantic-settings>=2.4.0
 email-validator>=2.2.0
 
-# База данных: SQLAlchemy 2.0 Async + asyncpg
+# База данных: SQLAlchemy 2.0 Async + asyncpg (PostgreSQL) / aiosqlite (Dev SQLite fallback)
 sqlalchemy>=2.0.32
 asyncpg>=0.29.0
+aiosqlite>=0.20.0
 alembic>=1.13.2
 
 # Кэширование, сессии, rate limiting

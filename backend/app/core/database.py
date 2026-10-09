@@ -21,13 +21,20 @@ from app.core.config import settings
 Base = declarative_base()
 
 # Создаем асинхронный движок SQLAlchemy
-# echo=settings.DEBUG логирует SQL-запросы в режиме отладки
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=False,
-    future=True,
-    pool_pre_ping=True,
-)
+if "sqlite" in settings.DATABASE_URL:
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=False,
+        future=True,
+        connect_args={"check_same_thread": False},
+    )
+else:
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=False,
+        future=True,
+        pool_pre_ping=True,
+    )
 
 # Фабрика сессий БД
 AsyncSessionLocal = async_sessionmaker(

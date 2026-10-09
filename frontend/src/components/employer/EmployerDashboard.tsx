@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DemoPersona, CandidatePublicCard } from '../../types';
 import { api } from '../../lib/api';
 import { ExplainModal } from './ExplainModal';
-import { Briefcase, Sparkles, Award, DollarSign, Filter, Search, Send, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Award, Search, Send, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 interface Props {
   persona: DemoPersona;
@@ -86,7 +86,18 @@ export const EmployerDashboard: React.FC<Props> = ({ persona }) => {
         </div>
 
         {/* Поля ввода потребности с обязательной вилкой зарплаты */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs font-bold text-slate-700 block mb-1">Название открытой позиции / вакансии</label>
+            <input
+              type="text"
+              value={needTitle}
+              onChange={(e) => setNeedTitle(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-800"
+              placeholder="Например: Middle Python / FastAPI Архитектор"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="text-xs font-bold text-slate-700 block mb-1">Специализация</label>
             <select
@@ -139,6 +150,7 @@ export const EmployerDashboard: React.FC<Props> = ({ persona }) => {
           </div>
         </div>
       </div>
+    </div>
 
       {/* 2. Список ранжированных обезличенных кандидатов */}
       <div className="space-y-4">
@@ -152,8 +164,17 @@ export const EmployerDashboard: React.FC<Props> = ({ persona }) => {
           </span>
         </div>
 
-        <div className="grid gap-4">
-          {candidates.map((cand) => (
+        {loading ? (
+          <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400">
+            Подбор и ранжирование кандидатов по модели Reverse Recruiting...
+          </div>
+        ) : candidates.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center text-slate-400">
+            Подходящих кандидатов не найдено. Попробуйте изменить параметры вилки или специализации.
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {candidates.map((cand) => (
             <div
               key={cand.candidate_id}
               className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow space-y-4"
@@ -225,7 +246,8 @@ export const EmployerDashboard: React.FC<Props> = ({ persona }) => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Модальное окно Explainable AI */}

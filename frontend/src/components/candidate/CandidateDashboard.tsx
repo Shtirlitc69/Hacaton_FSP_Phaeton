@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DemoPersona, Invitation } from '../../types';
 import { api } from '../../lib/api';
-import { Award, ShieldCheck, CheckCircle2, XCircle, ArrowRight, Lock, Sparkles, Building2, MapPin } from 'lucide-react';
+import { Award, ShieldCheck, CheckCircle2, XCircle, Lock, Sparkles, Building2 } from 'lucide-react';
 
 interface Props {
   persona: DemoPersona;
@@ -111,7 +111,11 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
           </div>
         </div>
 
-        {invitations.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
+            <p className="text-slate-500">Загрузка приглашений...</p>
+          </div>
+        ) : invitations.length === 0 ? (
           <div className="bg-white rounded-xl p-8 text-center border border-slate-200">
             <p className="text-slate-500">Новых приглашений пока нет. Пройдите регулярное микро-задание для повышения свежести профиля!</p>
           </div>

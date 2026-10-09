@@ -1,6 +1,6 @@
 import React from 'react';
 import { CandidatePublicCard } from '../../types';
-import { X, Sparkles, CheckCircle2, ShieldCheck, Award, Briefcase, DollarSign } from 'lucide-react';
+import { X, Sparkles, ShieldCheck, Briefcase } from 'lucide-react';
 
 interface Props {
   candidate: CandidatePublicCard | null;
