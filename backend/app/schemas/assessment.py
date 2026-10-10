@@ -35,7 +35,7 @@ class SubmitAnswerIn(BaseModel):
     session_id: int
     template_id: int
     selected_option_index: int = Field(..., ge=0, le=3)
-    time_spent_seconds: float = Field(..., ge=0.1)
+    time_spent_seconds: float = Field(0.0, ge=0.0)
     tab_switch_count: int = Field(0, ge=0)
 
 

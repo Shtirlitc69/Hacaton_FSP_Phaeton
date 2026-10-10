@@ -46,9 +46,16 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
+def get_canonical_sqlite_url() -> str:
+    import os
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+    db_path = os.path.join(base_dir, "fsp_platform.db").replace("\\", "/")
+    return f"sqlite+aiosqlite:///{db_path}"
+
+
 async def switch_to_sqlite_fallback():
     global engine, AsyncSessionLocal
-    fallback_url = "sqlite+aiosqlite:///./fsp_platform.db"
+    fallback_url = get_canonical_sqlite_url()
     engine = create_async_engine(
         fallback_url,
         echo=False,

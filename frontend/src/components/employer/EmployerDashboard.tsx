@@ -24,16 +24,22 @@ export const EmployerDashboard: React.FC<Props> = ({ persona }) => {
   const [inviteSuccess, setInviteSuccess] = useState(false);
 
   useEffect(() => {
-    fetchCandidates();
-  }, [persona]);
+    const timer = setTimeout(() => {
+      fetchCandidates();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [persona, specSlug, gradeSlug, salaryFrom, salaryTo]);
 
   const fetchCandidates = async () => {
     setLoading(true);
     const results = await api.getRecommendations({
-      specialization: specSlug,
-      grade: gradeSlug,
-      salary_min: salaryFrom,
-      salary_max: salaryTo
+      title: needTitle,
+      specialization_slug: specSlug,
+      target_grade_slug: gradeSlug,
+      salary_from: Number(salaryFrom),
+      salary_to: Number(salaryTo),
+      required_skills: specSlug === 'frontend' ? ['React', 'TypeScript'] : ['Python', 'FastAPI'],
+      description: 'Поиск по верифицированным категориям ФСП'
     });
     setCandidates(results);
     setLoading(false);

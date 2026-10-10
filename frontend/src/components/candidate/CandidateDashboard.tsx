@@ -8,13 +8,21 @@ interface Props {
   onStartAssessment: () => void;
   onOpenOnboarding?: () => void;
   onToast?: (title: string, message: string, type?: 'success' | 'error' | 'info') => void;
+  verifiedCategory?: {
+    final_theta: number;
+    assigned_grade_name: string;
+    percentile: number;
+    confidence_score: number;
+    specialization_name?: string;
+  } | null;
 }
 
 export const CandidateDashboard: React.FC<Props> = ({
   persona,
   onStartAssessment,
   onOpenOnboarding,
-  onToast
+  onToast,
+  verifiedCategory
 }) => {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,6 +67,17 @@ export const CandidateDashboard: React.FC<Props> = ({
   const isIvan = persona.id === 'cand_ivan';
   const hasFsp = isIvan || Boolean(customFspId);
   const activeFspId = customFspId || (isIvan ? 'FSP-RU-2024-1001' : null);
+
+  // Динамические психометрические показатели
+  const baseTheta = isIvan ? 1.15 : -0.20;
+  const currentTheta = verifiedCategory?.final_theta !== undefined ? verifiedCategory.final_theta : baseTheta;
+  const currentSe = verifiedCategory ? 0.24 : (isIvan ? 0.22 : 0.28);
+  const currentGradeName = verifiedCategory?.assigned_grade_name 
+    ? `${verifiedCategory.assigned_grade_name} (${verifiedCategory.specialization_name || (isIvan ? 'Backend' : 'Frontend')})`
+    : (isIvan ? 'Специалист (Middle Backend)' : 'Младший разработчик (Junior Frontend)');
+  const currentPercentile = verifiedCategory?.percentile !== undefined ? verifiedCategory.percentile : (isIvan ? 88.0 : 58.0);
+  const topPercent = Math.max(1, Math.round(100 - currentPercentile));
+  const normalizedThetaWidth = Math.min(100, Math.max(12, Math.round(((currentTheta + 2.5) / 5.0) * 100)));
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
@@ -150,10 +169,10 @@ export const CandidateDashboard: React.FC<Props> = ({
             
             <div className="mt-1">
               <div className="text-3xl font-black text-slate-900 font-mono tracking-tight">
-                θ = {isIvan ? '+1.15' : '-0.20'}
+                θ = {currentTheta >= 0 ? `+${currentTheta.toFixed(2)}` : currentTheta.toFixed(2)}
               </div>
               <div className="text-xs text-slate-500 font-mono mt-0.5">
-                SE(θ) = {isIvan ? '0.22' : '0.28'} [высокая надежность]
+                SE(θ) = {currentSe.toFixed(2)} [высокая надежность]
               </div>
             </div>
 
@@ -167,17 +186,17 @@ export const CandidateDashboard: React.FC<Props> = ({
               <div className="h-2 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
                 <div 
                   className="h-full bg-blue-600 rounded-full transition-all duration-700"
-                  style={{ width: isIvan ? '72%' : '44%' }}
+                  style={{ width: `${normalizedThetaWidth}%` }}
                 />
               </div>
             </div>
 
             <div className="mt-5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
               <div className="text-xs font-bold text-slate-800">
-                Грейд: {isIvan ? 'Специалист (Middle Backend)' : 'Младший разработчик (Junior Frontend)'}
+                Грейд: {currentGradeName}
               </div>
               <div className="text-xs text-blue-700 font-mono font-semibold">
-                {isIvan ? 'Топ 12% в категории (1 450 инженеров)' : 'Топ 42% в категории'}
+                Топ {topPercent}% в категории ({Math.round(currentPercentile)} перцентиль)
               </div>
             </div>
           </div>

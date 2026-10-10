@@ -20,6 +20,16 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AppTab>('dashboard');
   const [session, setSession] = useState<AuthSession | null>(api.getStoredSession());
 
+  // Состояние верифицированной категории после CAT-тестирования
+  const [candidateCategory, setCandidateCategory] = useState<any>(() => {
+    try {
+      const saved = localStorage.getItem('fsp_verified_category');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
   // Состояние всплывающих уведомлений (Toast)
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
 
@@ -32,6 +42,23 @@ export const App: React.FC = () => {
   const [vacancies, setVacancies] = useState<Vacancy[]>([]);
   const [challenges, setChallenges] = useState<DailyChallenge[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
+
+  const handleAssessmentComplete = (result: any) => {
+    if (result) {
+      setCandidateCategory(result);
+      try {
+        localStorage.setItem('fsp_verified_category', JSON.stringify(result));
+      } catch (e) {}
+    }
+    setActiveTab('dashboard');
+    const gradeTitle = result?.assigned_grade_name || 'Middle';
+    const thetaVal = result?.final_theta !== undefined ? (result.final_theta > 0 ? `+${result.final_theta}` : result.final_theta) : '+1.35';
+    addToast(
+      'Тестирование успешно завершено!',
+      `Присвоена категория: ${gradeTitle} (Способность θ = ${thetaVal}, ${result?.percentile ? Math.round(result.percentile) : 90}% перцентиль).`,
+      'success'
+    );
+  };
 
   const addToast = useCallback((title: string, message: string, type: 'success' | 'error' | 'info' = 'info') => {
     const id = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -142,10 +169,9 @@ export const App: React.FC = () => {
         {currentPersona.role === 'candidate' ? (
           activeTab === 'assessment' ? (
             <AssessmentRunner
-              onFinish={() => {
-                setActiveTab('dashboard');
-                addToast('Тестирование завершено', 'Грейд и способность θ успешно обновлены в вашем профиле.', 'success');
-              }}
+              onFinish={handleAssessmentComplete}
+              candidateSpecialization={currentPersona.id === 'cand_elena' ? 'frontend' : 'backend'}
+              candidateGrade="middle"
             />
           ) : activeTab === 'invitations' ? (
             <CandidateInvitationsView
@@ -172,6 +198,7 @@ export const App: React.FC = () => {
               onStartAssessment={() => setActiveTab('assessment')}
               onOpenOnboarding={() => setIsOnboardingModalOpen(true)}
               onToast={addToast}
+              verifiedCategory={candidateCategory}
             />
           )
         ) : (

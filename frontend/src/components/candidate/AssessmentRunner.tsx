@@ -15,10 +15,16 @@ import {
 } from 'lucide-react';
 
 interface Props {
-  onFinish: () => void;
+  onFinish: (result?: any) => void;
+  candidateSpecialization?: string;
+  candidateGrade?: string;
 }
 
-export const AssessmentRunner: React.FC<Props> = ({ onFinish }) => {
+export const AssessmentRunner: React.FC<Props> = ({
+  onFinish,
+  candidateSpecialization = 'backend',
+  candidateGrade = 'middle'
+}) => {
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [question, setQuestion] = useState<Question | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -52,7 +58,7 @@ export const AssessmentRunner: React.FC<Props> = ({ onFinish }) => {
 
   const startTest = async () => {
     setLoading(true);
-    const startRes = await api.startAssessment('backend', 'middle');
+    const startRes = await api.startAssessment(candidateSpecialization, candidateGrade);
     setSessionId(startRes.session_id);
     const firstQ = await api.getNextQuestion(startRes.session_id);
     if (firstQ.is_finished) {
@@ -205,7 +211,7 @@ export const AssessmentRunner: React.FC<Props> = ({ onFinish }) => {
               </div>
 
               <button
-                onClick={onFinish}
+                onClick={() => onFinish(result)}
                 className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Перейти в личный кабинет</span>
