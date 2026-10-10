@@ -2,18 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  padding: 0;
+@layer base {
+  body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
-/* Кастомные акценты брендбука ФСП */
-.fsp-gradient {
-  background: linear-gradient(135deg, #1E1B4B 0%, #4A0E4E 50%, #5E17EB 100%);
+/* Bento Card в стиле Linear / Vercel */
+.bento-card-dark {
+  background: #0B0F19;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -15px rgba(11, 15, 25, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
 
-.fsp-glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
+.bento-card-light {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

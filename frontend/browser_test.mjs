@@ -29,7 +29,8 @@ async function runBrowserTest() {
   page.on('pageerror', err => consoleLogs.push(`[PAGE_ERROR] ${err.message}`));
 
   console.log('🌐 [Browser Test] Переход на http://127.0.0.1:5173...');
-  await page.goto('http://127.0.0.1:5173', { waitUntil: 'networkidle0' });
+  await page.goto('http://127.0.0.1:5173', { waitUntil: 'domcontentloaded', timeout: 10000 });
+  await new Promise(r => setTimeout(r, 1000));
 
   // 1. Скриншот стартовой страницы (Кандидат Иван)
   console.log('📸 1. Скриншот Кабинета Кандидата (Иван)...');
@@ -42,7 +43,7 @@ async function runBrowserTest() {
     const text = await page.evaluate(el => el.textContent, b);
     if (text && (text.includes('тест') || text.includes('Тест'))) {
       await b.click();
-      await new Promise(r => setTimeout(r, 1200));
+      await new Promise(r => setTimeout(r, 1500));
       await page.screenshot({ path: path.join(OUTPUT_DIR, '02_assessment_runner.png') });
       console.log('📸 2. Скриншот модуля тестирования сохранен (кнопка: ' + text.trim() + ')');
       break;
@@ -51,7 +52,8 @@ async function runBrowserTest() {
 
   // 3. Возврат на главную и переключение на Работодателя (Сбер)
   console.log('🏢 3. Переключение персоны на Работодателя (Сбер)...');
-  await page.goto('http://127.0.0.1:5173', { waitUntil: 'networkidle0' });
+  await page.goto('http://127.0.0.1:5173', { waitUntil: 'domcontentloaded', timeout: 10000 });
+  await new Promise(r => setTimeout(r, 1000));
   await page.evaluate(() => {
     const allBtns = Array.from(document.querySelectorAll('button'));
     const btn = allBtns.find(b => b.textContent && b.textContent.includes('Сбер'));

@@ -14,7 +14,7 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     role: 'candidate',
     description: 'Middle Backend (Python/FastAPI) • Серебряный призёр ФСП',
     candidateId: 1,
-    badge: '🏆 Призёр ФСП'
+    badge: 'Призёр ФСП'
   },
   {
     id: 'cand_anna',
@@ -22,7 +22,7 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     role: 'candidate',
     description: 'Junior Frontend (React/TS) • Без спортивной истории',
     candidateId: 2,
-    badge: '⚡ Без ФСП'
+    badge: 'Без ФСП'
   },
   {
     id: 'emp_sber',
@@ -30,7 +30,7 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     role: 'employer',
     description: 'Работодатель • Поиск Middle/Senior разработчиков',
     employerId: 1,
-    badge: '🏢 Компания'
+    badge: 'Компания'
   },
   {
     id: 'emp_yandex',
@@ -38,19 +38,19 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     role: 'employer',
     description: 'Работодатель • Поиск HighLoad инженеров',
     employerId: 2,
-    badge: '🏢 Компания'
+    badge: 'Компания'
   }
 ];
 
 export const PersonaSwitcher: React.FC<Props> = ({ currentPersona, onSelectPersona }) => {
   return (
-    <div className="bg-slate-900 text-white px-4 py-2 border-b border-slate-800 text-xs">
+    <div className="bg-slate-950 text-white px-4 py-2 border-b border-slate-800/80 text-xs font-sans">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="bg-fsp-primary px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase">
-            Демо для жюри
+        <div className="flex items-center gap-2.5">
+          <span className="bg-blue-600 text-white font-mono px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase">
+            ДЕМО ДЛЯ ЖЮРИ
           </span>
-          <span className="text-slate-300">Переключение ролей в 1 клик:</span>
+          <span className="text-slate-400 text-xs">Переключение ролей в 1 клик:</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -60,19 +60,25 @@ export const PersonaSwitcher: React.FC<Props> = ({ currentPersona, onSelectPerso
               <button
                 key={p.id}
                 onClick={() => onSelectPersona(p)}
-                className={`px-3 py-1 rounded-full flex items-center gap-1.5 transition-all font-medium ${
+                className={`px-3 py-1 rounded-lg flex items-center gap-1.5 transition-all text-xs font-medium border ${
                   isActive
-                    ? 'bg-fsp-primary text-white shadow-md shadow-fsp-primary/40 ring-1 ring-white/30'
-                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                    ? 'bg-blue-600 border-blue-500 text-white shadow-sm ring-1 ring-blue-400/30'
+                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-850'
                 }`}
               >
                 {p.role === 'candidate' ? (
-                  p.badge.includes('Призёр') ? <Award className="w-3.5 h-3.5 text-amber-400" /> : <UserCheck className="w-3.5 h-3.5 text-cyan-400" />
+                  p.badge.includes('Призёр') ? (
+                    <Award className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  ) : (
+                    <UserCheck className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                  )
                 ) : (
-                  <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <Building2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 )}
                 <span>{p.name}</span>
-                <span className="opacity-70 text-[10px]">({p.role === 'candidate' ? 'Соискатель' : 'Работодатель'})</span>
+                <span className="text-slate-400 text-[10px] font-mono">
+                  [{p.role === 'candidate' ? 'Соискатель' : 'Работодатель'}]
+                </span>
               </button>
             );
           })}
