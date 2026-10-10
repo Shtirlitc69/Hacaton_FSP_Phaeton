@@ -62,5 +62,44 @@ export interface DemoPersona {
   description: string;
   candidateId?: number;
   employerId?: number;
+  companyName?: string;
   badge: string;
+}
+
+export interface AuthSession {
+  token: string;
+  role: 'candidate' | 'employer';
+  userId: number;
+  candidateId?: number;
+  employerId?: number;
+  nameOrTitle?: string;
+  email: string;
+  company_name?: string;
+}
+
+export interface Vacancy {
+  id: number;
+  title: string;
+  company_name: string;
+  salary_from: number;
+  salary_to: number;
+  description: string;
+  skills: string[];
+  created_at: string;
+}
+
+export interface DailyChallenge {
+  id: number;
+  title: string;
+  description: string;
+  reward_badge: string;
+  created_at: string;
+  is_completed?: boolean;
+}
+
+export interface ToastNotification {
+  id: string;
+  type: 'success' | 'error' | 'info';
+  title: string;
+  message: string;
 }

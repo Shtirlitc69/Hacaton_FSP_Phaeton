@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.core.database import get_db
-from app.core.security import get_password_hash, verify_password, create_access_token
+from app.core.security import get_password_hash, verify_password, create_access_token, decode_token, oauth2_scheme
 from app.core.audit import log_security_event
 from app.models.user import User, Consent
 from app.models.candidate import CandidateProfile
@@ -137,3 +137,46 @@ async def login(
         user_id=user.id,
         pseudonym_or_company=pseudonym_or_company
     )
+
+
+@router.get("/me")
+async def get_current_user_profile(
+    token: str = Depends(oauth2_scheme),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Получение профиля текущего авторизованного пользователя по JWT токену.
+    """
+    payload = decode_token(token)
+    user_id = int(payload.get("sub"))
+    user_res = await db.execute(select(User).where(User.id == user_id))
+    user = user_res.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
+
+    cand_id = None
+    emp_id = None
+    name_or_title = None
+    if user.role == "candidate":
+        c_res = await db.execute(select(CandidateProfile).where(CandidateProfile.user_id == user.id))
+        cand = c_res.scalar_one_or_none()
+        if cand:
+            cand_id = cand.id
+            name_or_title = f"{cand.first_name} {cand.last_name}".strip() if cand.first_name else cand.pseudonym
+    elif user.role == "employer":
+        e_res = await db.execute(select(EmployerProfile).where(EmployerProfile.user_id == user.id))
+        emp = e_res.scalar_one_or_none()
+        if emp:
+            emp_id = emp.id
+            name_or_title = emp.company_name
+
+    return {
+        "id": user.id,
+        "email": user.email,
+        "role": user.role,
+        "is_verified": user.is_verified,
+        "candidate_id": cand_id,
+        "employer_id": emp_id,
+        "name_or_title": name_or_title
+    }
+

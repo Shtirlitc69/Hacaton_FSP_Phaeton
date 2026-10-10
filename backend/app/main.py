@@ -17,7 +17,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.core.database import engine, Base
+from app.core.database import engine, Base, AsyncSessionLocal
+from app.core.init_db import ensure_db_initialized
 from app.api.router import api_router
 
 
@@ -25,14 +26,25 @@ from app.api.router import api_router
 async def lifespan(app: FastAPI):
     """
     Жизненный цикл приложения (Startup & Shutdown).
-    Автоматически инициализирует схемы БД при первом старте сервиса.
+    Автоматически инициализирует схемы БД при первом старте сервиса и наполняет базовыми данными.
     """
-    # Создаем таблицы БД асинхронно
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    from app.core import database
+    try:
+        async with database.engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    except Exception as e:
+        print(f"[INFO] Database unavailable ({e}). Switching to local SQLite...")
+        await database.switch_to_sqlite_fallback()
+        async with database.engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
+    # Автоматическое наполнение пустой БД при первом старте
+    async with database.AsyncSessionLocal() as session:
+        await ensure_db_initialized(session)
+
     yield
     # Очистка ресурсов при завершении
-    await engine.dispose()
+    await database.engine.dispose()
 
 
 app = FastAPI(
@@ -57,7 +69,13 @@ app = FastAPI(
 # Настройка CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # В рамках хакатона разрешаем все источники для удобства жюри
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+    ],
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:[0-9]+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

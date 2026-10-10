@@ -46,6 +46,19 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
+async def switch_to_sqlite_fallback():
+    global engine, AsyncSessionLocal
+    fallback_url = "sqlite+aiosqlite:///./fsp_platform.db"
+    engine = create_async_engine(
+        fallback_url,
+        echo=False,
+        future=True,
+        connect_args={"check_same_thread": False},
+    )
+    AsyncSessionLocal.configure(bind=engine)
+    return engine
+
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     FastAPI dependency: предоставляет асинхронную сессию БД на время выполнения запроса.

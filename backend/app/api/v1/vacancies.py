@@ -82,6 +82,30 @@ async def apply_to_vacancy(
     return {"status": "success", "message": "Отклик успешно направлен работодателю"}
 
 
+@router.post("/")
+async def create_vacancy(
+    data: VacancyCreateIn,
+    employer_id: int = 1,
+    db: AsyncSession = Depends(get_db)
+):
+    """Публикация новой вакансии работодателем"""
+    vac = Vacancy(
+        employer_id=employer_id,
+        specialization_id=data.specialization_id,
+        grade_id=data.grade_id,
+        title=data.title,
+        description=data.description,
+        salary_from=data.salary_from,
+        salary_to=data.salary_to,
+        required_skills=data.required_skills,
+        is_active=True
+    )
+    db.add(vac)
+    await db.commit()
+    await db.refresh(vac)
+    return {"id": vac.id, "title": vac.title, "message": "Вакансия успешно опубликована"}
+
+
 @router.get("/challenges/daily")
 async def get_daily_challenges(db: AsyncSession = Depends(get_db)):
     """Получение списка регулярных микро-заданий для поддержания свежести профиля"""
@@ -97,3 +121,31 @@ async def get_daily_challenges(db: AsyncSession = Depends(get_db)):
         }
         for ch in challenges
     ]
+
+
+class ChallengeSubmitIn(BaseModel):
+    candidate_id: int
+    solution_approach: str
+
+
+@router.post("/challenges/{challenge_id}/submit")
+async def submit_challenge_solution(
+    challenge_id: int,
+    data: ChallengeSubmitIn,
+    db: AsyncSession = Depends(get_db)
+):
+    """Сдача решения ежедневной задачи соискателем"""
+    sub = ChallengeSubmission(
+        challenge_id=challenge_id,
+        candidate_id=data.candidate_id,
+        solution_code=data.solution_approach,
+        score=100.0,
+        is_passed=True
+    )
+    db.add(sub)
+    await db.commit()
+    return {
+        "status": "success",
+        "message": "Решение принято! Присвоен бейдж активности ФСП, показатель свежести профиля обновлен (+10%)."
+    }
+

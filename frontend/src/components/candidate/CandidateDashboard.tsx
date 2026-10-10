@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { DemoPersona, Invitation } from '../../types';
 import { api } from '../../lib/api';
-import { ShieldCheck, CheckCircle2, XCircle, Lock, Sparkles, Building2 } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, XCircle, Lock, Sparkles, Building2, Sliders, Download, Link2 } from 'lucide-react';
 
 interface Props {
   persona: DemoPersona;
   onStartAssessment: () => void;
+  onOpenOnboarding?: () => void;
+  onToast?: (title: string, message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
-export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment }) => {
+export const CandidateDashboard: React.FC<Props> = ({
+  persona,
+  onStartAssessment,
+  onOpenOnboarding,
+  onToast
+}) => {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fspInput, setFspInput] = useState('');
+  const [customFspId, setCustomFspId] = useState<string | null>(null);
+  const [isLinkingFsp, setIsLinkingFsp] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -28,7 +38,27 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
     setInvitations(prev => prev.map(inv => inv.id === id ? { ...inv, status: updated.status, revealed_contacts: updated.revealed_contacts } : inv));
   };
 
+  const handleLinkFsp = async () => {
+    if (!fspInput.trim()) {
+      onToast?.('Внимание', 'Введите ID в формате FSP-RU-XXXX', 'error');
+      return;
+    }
+    setIsLinkingFsp(true);
+    try {
+      const res = await api.linkFspProfile(persona.candidateId || 2, fspInput.trim());
+      setCustomFspId(fspInput.trim());
+      onToast?.('Профиль синхронизирован', res.message || 'Олимпийский бонус ФСП (+15%) начислен в подборе', 'success');
+      setFspInput('');
+    } catch (e) {
+      onToast?.('Ошибка', 'Не удалось верифицировать ID ФСП', 'error');
+    } finally {
+      setIsLinkingFsp(false);
+    }
+  };
+
   const isIvan = persona.id === 'cand_ivan';
+  const hasFsp = isIvan || Boolean(customFspId);
+  const activeFspId = customFspId || (isIvan ? 'FSP-RU-2024-1001' : null);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 font-sans">
@@ -77,17 +107,36 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
 
           <div className="relative z-10 pt-6 mt-6 border-t border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="text-xs text-slate-400 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
               <span>Профиль открыт для персональных офферов компаний</span>
             </div>
 
-            <button
-              onClick={onStartAssessment}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 text-xs self-start sm:self-auto cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4" />
-              Пройти CAT-тест (Повысить грейд)
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              {onOpenOnboarding && (
+                <button
+                  onClick={onOpenOnboarding}
+                  className="bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold px-3.5 py-2.5 rounded-xl border border-slate-800 transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer"
+                >
+                  <Sliders className="w-3.5 h-3.5 text-slate-400" />
+                  Параметры профиля
+                </button>
+              )}
+              <button
+                onClick={() => window.print()}
+                className="bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold px-3.5 py-2.5 rounded-xl border border-slate-800 transition-all flex items-center justify-center gap-1.5 text-xs cursor-pointer"
+                title="Экспорт верифицированного резюме по 152-ФЗ в PDF"
+              >
+                <Download className="w-3.5 h-3.5 text-slate-400" />
+                Экспорт PDF
+              </button>
+              <button
+                onClick={onStartAssessment}
+                className="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 text-xs self-start sm:self-auto cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4" />
+                Пройти CAT-тест (Повысить грейд)
+              </button>
+            </div>
           </div>
         </div>
 
@@ -143,12 +192,12 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
           <div>
             <div className="flex items-center justify-between text-xs font-mono text-slate-500 mb-2">
               <span>РЕЕСТР ДОСТИЖЕНИЙ ФСП</span>
-              <span className={`font-bold ${isIvan ? 'text-amber-600' : 'text-slate-400'}`}>
-                {isIvan ? 'ВЕРИФИЦИРОВАНО' : 'НЕТ ИСТОРИИ'}
+              <span className={`font-bold ${hasFsp ? 'text-amber-600' : 'text-slate-400'}`}>
+                {hasFsp ? 'ВЕРИФИЦИРОВАНО' : 'НЕТ ИСТОРИИ'}
               </span>
             </div>
 
-            {isIvan ? (
+            {hasFsp ? (
               <div className="space-y-3 mt-2">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl shadow-sm">
@@ -156,7 +205,7 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
                   </div>
                   <div>
                     <div className="text-base font-extrabold text-slate-900">
-                      Серебряный призёр Чемпионата России 2024
+                      {isIvan ? 'Серебряный призёр Чемпионата России 2024' : 'Верифицированный участник реестра ФСП'}
                     </div>
                     <div className="text-xs text-slate-500">
                       Федерация спортивного программирования РФ
@@ -165,7 +214,7 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
                 </div>
 
                 <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200/80 text-xs font-mono text-amber-900 flex items-center justify-between">
-                  <span>Сертификат: FSP-RU-2024-1001</span>
+                  <span>Сертификат: {activeFspId}</span>
                   <span className="font-bold text-amber-700">+15% бонус в подборе</span>
                 </div>
               </div>
@@ -180,13 +229,30 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
                       Спортивный профиль не привязан
                     </div>
                     <div className="text-xs text-slate-500">
-                      Кандидат не участвовал в турнирах ФСП
+                      Кандидат не указал сертификат турниров ФСП
                     </div>
                   </div>
                 </div>
 
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
-                  Алгоритм подбора автоматически перенормировал веса без штрафа для соискателя.
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-2">
+                  <div>Алгоритм подбора автоматически перенормировал веса без штрафа для соискателя.</div>
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="text"
+                      value={fspInput}
+                      onChange={(e) => setFspInput(e.target.value)}
+                      placeholder="FSP-RU-2025-XXXX"
+                      className="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg flex-1 font-mono uppercase focus:outline-none focus:border-blue-500"
+                    />
+                    <button
+                      onClick={handleLinkFsp}
+                      disabled={isLinkingFsp}
+                      className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1 cursor-pointer transition-colors disabled:opacity-50"
+                    >
+                      <Link2 className="w-3.5 h-3.5" />
+                      {isLinkingFsp ? '...' : 'Привязать (+15%)'}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -225,8 +291,16 @@ export const CandidateDashboard: React.FC<Props> = ({ persona, onStartAssessment
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-400 mt-4 pt-3 border-t border-slate-100 font-mono">
-            Защита от занижения зарплаты на этапе скрининга
+          <div className="text-[11px] text-slate-400 mt-4 pt-3 border-t border-slate-100 flex items-center justify-between font-mono">
+            <span>Защита от занижения на этапе скрининга</span>
+            {onOpenOnboarding && (
+              <button
+                onClick={onOpenOnboarding}
+                className="text-emerald-700 hover:text-emerald-800 font-bold hover:underline cursor-pointer flex items-center gap-1"
+              >
+                <span>Изменить вилку</span>
+              </button>
+            )}
           </div>
         </div>
 

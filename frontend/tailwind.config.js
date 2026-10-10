@@ -30,9 +30,33 @@ export default {
       },
       boxShadow: {
         'bento': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04)',
-        'bento-hover': '0 12px 30px -8px rgba(15, 23, 42, 0.08)',
+        'bento-hover': '0 10px 25px -5px rgba(15, 23, 42, 0.06)',
         'inner-light': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.1)',
-      }
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideInRight: {
+          '0%': { opacity: '0', transform: 'translateX(16px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.97)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'fade-in': 'fadeIn 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-up': 'slideUp 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-in-right': 'slideInRight 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'scale-in': 'scaleIn 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
+      },
     },
   },
   plugins: [],
